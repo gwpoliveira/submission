@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Submissão bem-sucedida!</h1>
+        <p>Seu trabalho foi enviado com sucesso.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Voltar para a página inicial</a>
+    </div>
+{% endblock %}

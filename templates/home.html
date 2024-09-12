@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 border">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Bem-vindo ao Portal de Submissões</h1>
+        <p class="col-md-8 fs-4">Este portal permite que acadêmicos e profissionais submetam seus trabalhos para avaliação e publicação. Comece hoje mesmo se registrando ou fazendo login em sua conta.</p>
+        <div class="mt-4">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Registre-se Agora <i class="bi bi-pencil-square"></i></a>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg ms-3" role="button">Login <i class="bi bi-box-arrow-in-right"></i></a>
+        </div>
+    </div>
+</div>
+<div class="row align-items-md-stretch">
+    <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+            <h2>Por Que Participar?</h2>
+            <p>Tenha acesso a uma ampla rede de profissionais e colegas. Expanda sua presença profissional contribuindo para nossa comunidade.</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+            <h2>Diretrizes para Submissão</h2>
+            <p>Garanta que suas submissões atendam às nossas diretrizes para um processo de revisão mais tranquilo. Confira a seção de diretrizes de submissão antes de enviar seu trabalho.</p>
+            <a href="#" class="btn btn-outline-secondary" role="button">Saiba Mais</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

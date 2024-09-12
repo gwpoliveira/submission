@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contato{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Fale Conosco</h1>
+    <p>Se você tem alguma dúvida ou precisa de assistência, não hesite em entrar em contato conosco através do formulário abaixo.</p>
+    <form method="post">
+        {% csrf_token %}
+        <!-- Suponha que você tenha um form com campos para nome, email e mensagem -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email">
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label">Mensagem</label>
+            <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
+{% endblock %}

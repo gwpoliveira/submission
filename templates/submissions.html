@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Minhas Submissões</h1>
+
+    {% if submissions %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Eixo Temático</th>
+                    <th>Modalidade</th>
+                    <th>Data de Envio</th>
+                    <th>Status</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.thematic_axis.name }}</td>
+                    <td>{{ submission.modality.name }}</td>
+                    <td>{{ submission.data_envio }}</td>
+                    <td>{{ submission.get_status_display }}</td>
+                    <td>{{ submission.observacao }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Você ainda não fez nenhuma submissão.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Detalhes da Submissão</h1>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Dados do Usuário</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Nome do Usuário:</strong> {{ submission.user.user.username }}</p>
+            <p><strong>Nome Completo:</strong> {{ submission.user.nome }}</p>
+            <p><strong>CPF:</strong> {{ submission.user.cpf }}</p>
+            <p><strong>WhatsApp:</strong> {{ submission.user.whatsapp }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h4>Informações da Submissão</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Eixo Temático:</strong> {{ submission.thematic_axis.name }}</p>
+            <p><strong>Modalidade:</strong> {{ submission.modality.name }}</p>
+            <p><strong>Data de Envio:</strong> {{ submission.data_envio|date:"d/m/Y H:i" }}</p>
+            <p><strong>Status:</strong> {{ submission.get_status_display }}</p>
+            <p><strong>Observação:</strong> {{ submission.observacao|default:"Nenhuma observação" }}</p>
+
+            <hr>
+
+            <p><strong>Arquivo Submetido:</strong>
+                {% if submission.arquivo %}
+                    <a href="{{ submission.arquivo.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Baixar Arquivo</a>
+                {% else %}
+                    <span class="text-danger">Não anexado.</span>
+                {% endif %}
+            </p>
+
+            <p><strong>Comprovante de Pagamento:</strong>
+                {% if submission.user.comprovante_pagamento %}
+                    <a href="{{ submission.user.comprovante_pagamento.url }}" target="_blank" class="btn btn-outline-secondary btn-sm">Ver Comprovante</a>
+                {% else %}
+                    <span class="text-danger">Não anexado.</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Formulário para atualizar status e observação -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h4>Atualizar Submissão</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'user_submission_detail' submission.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="EM_ANALISE" {% if submission.status == 'EM_ANALISE' %}selected{% endif %}>Em Análise</option>
+                        <option value="DEFERIDO" {% if submission.status == 'DEFERIDO' %}selected{% endif %}>Deferido</option>
+                        <option value="INDEFERIDO" {% if submission.status == 'INDEFERIDO' %}selected{% endif %}>Indeferido</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="observacao" class="form-label">Observação:</label>
+                    <textarea name="observacao" id="observacao" class="form-control" rows="3">{{ submission.observacao }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Atualizar Submissão</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Painel de Administração</h1>
+
+    <!-- Filtros de busca -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" name="username" class="form-control" placeholder="Buscar por usuário">
+            </div>
+            <div class="col-md-3">
+                <select name="thematic_axis" class="form-control">
+                    <option value="">Filtrar por Eixo Temático</option>
+                    {% for axis in thematic_axes %}
+                    <option value="{{ axis.id }}">{{ axis.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="modality" class="form-control">
+                    <option value="">Filtrar por Modalidade</option>
+                    {% for mod in modalities %}
+                    <option value="{{ mod.id }}">{{ mod.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-control">
+                    <option value="">Filtrar por Status</option>
+                    <option value="EM_ANALISE">Em Análise</option>
+                    <option value="DEFERIDO">Deferido</option>
+                    <option value="INDEFERIDO">Indeferido</option>
+                </select>
+            </div>
+            <div class="col-md-3 mt-3">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Tabela de Submissões -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Nome Completo</th>
+                <th>Eixo Temático</th>
+                <th>Modalidade</th>
+                <th>Data de Envio</th>
+                <th>Status</th>
+                <th>Observação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+            <tr>
+                <!-- Link para a página de detalhes da submissão -->
+                <td><a href="{% url 'user_submission_detail' submission.id %}">{{ submission.user.user.username }}</a></td>
+                <td>{{ submission.user.nome }}</td>
+                <td>{{ submission.thematic_axis.name }}</td>
+                <td>{{ submission.modality.name }}</td>
+                <td>{{ submission.data_envio }}</td>
+                <td>{{ submission.get_status_display }}</td>
+                <td>{{ submission.observacao }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <nav aria-label="Navegação de páginas">
+        <ul class="pagination justify-content-center">
+            {% if submissions.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ submissions.previous_page_number }}">&laquo;</a></li>
+            {% endif %}
+
+            {% for num in submissions.paginator.page_range %}
+            <li class="page-item {% if submissions.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if submissions.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ submissions.next_page_number }}">&raquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ submissions.paginator.num_pages }}">&raquo;&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

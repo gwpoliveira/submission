@@ -1,0 +1,4 @@
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("JavaScript carregado!");
+    // Custom JavaScript code can go here
+});
