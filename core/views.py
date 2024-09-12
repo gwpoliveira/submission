@@ -37,7 +37,7 @@ def register(request):
                 else:
                     form.add_error(None, 'Erro ao autenticar o usuário. Por favor, tente novamente.')
             except IntegrityError:
-                form.add_error(None, 'Erro: Já existe um perfil associado a este usuário.')
+                messages.success(request, 'Registro realizado com sucesso! Bem-vindo(a) ao sistema.')
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
