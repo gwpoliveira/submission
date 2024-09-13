@@ -10,11 +10,25 @@
         <p class="col-md-8 fs-4">Este portal permite que acadêmicos e profissionais submetam seus trabalhos
             para avaliação e publicação. Comece hoje mesmo se registrando ou fazendo login em sua conta.</p>
         {% if not user.is_authenticated %}
-            <div class="mt-4">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Registre-se Agora <i class="bi bi-pencil-square"></i></a>
-                <a href="{% url 'login' %}" class="btn btn-secondary btn-lg ms-3" role="button">Login <i class="bi bi-box-arrow-in-right"></i></a>
+            <div class="mt-4 d-flex flex-column flex-lg-row gap-3 justify-content-center">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">
+                    Registre-se Agora <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-secondary btn-lg" role="button">
+                    Login <i class="bi bi-box-arrow-in-right"></i>
+                </a>
+            </div>
+        {% else %}
+            <div class="mt-4 d-flex flex-column flex-lg-row gap-3 justify-content-center">
+                <a href="{% url 'submission_form' %}" class="btn btn-primary btn-lg" role="button">
+                    Submeter Trabalho <i class="bi bi-upload"></i>
+                </a>
+                <a href="{% url 'view_submissions' %}" class="btn btn-secondary btn-lg" role="button">
+                    Minhas Submissões <i class="bi bi-file-earmark-text"></i>
+                </a>
             </div>
         {% endif %}
+
     </div>
 </div>
 <div class="row align-items-md-stretch">

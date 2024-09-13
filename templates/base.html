@@ -15,35 +15,37 @@
 <body>
     <header>
        {% if user.is_authenticated %}
-    <nav class="navbar navbar-expand-lg fw-bold" style="background-color: #c9d833; color: #004737;">
-        <div class="container">
-            <img src="{% static 'img/grupo.png' %}" alt="logo do grupo magister, na cor azul" width="100">
-            <a class="navbar-brand" href="{% url 'home' %}" style="color: #004737">
-                Portal Submissões do XIII CONAFF </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto" >
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'submission_form' %}">Submeter Trabalho</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'view_submissions' %}">Minhas Submissões</a>
-                    </li>
-                    {% if user.is_superuser %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-{% else %}
+            <nav class="navbar navbar-expand-lg fw-bold" style="background-color: #c9d833; color: #004737;">
+                <div class="container">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'img/grupo.png' %}" alt="logo do grupo magister, na cor azul" width="100">
+                    </a>
+                    <a class="navbar-brand" href="{% url 'home' %}" style="color: #004737">
+                        Portal Submissões do XIII CONAFF </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto" >
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'submission_form' %}">Submeter Trabalho</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'view_submissions' %}">Minhas Submissões</a>
+                            </li>
+                            {% if user.is_superuser %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% else %}
     <nav class="navbar navbar-expand-lg fw-bold" style="background-color: #c9d833; color: #004737;">
         <div class="container">
             <img src="{% static 'img/grupo.png' %}" alt="logo do grupo magister, na cor azul" width="100">
