@@ -10,72 +10,57 @@
     </div>
 
     <!-- Formulário de submissão -->
-    <form method="post" enctype="multipart/form-data" class="shadow-lg p-4 rounded bg-light">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- Seção de Informações do Usuário -->
+        <!-- Exibir erros globais do formulário -->
+        {% if profile_form.errors or submission_form.errors or component_formset.errors %}
+            <div class="alert alert-danger">
+                <strong>Corrija os erros abaixo e tente novamente.</strong>
+            </div>
+        {% endif %}
+
+        <!-- Seção de Informações Pessoais -->
         <div class="mb-4">
             <h4 class="text-secondary">Informações Pessoais</h4>
-            <hr class="mt-0 mb-3">
             {{ profile_form.as_p }}
         </div>
 
         <!-- Seção de Submissão -->
         <div class="mb-4">
             <h4 class="text-secondary">Detalhes da Submissão</h4>
-            <hr class="mt-0 mb-3">
             {{ submission_form.as_p }}
         </div>
-
-        <!-- Exibir erros de validação do arquivo, se houver -->
-        {% if submission_form.arquivo.errors %}
-            <div class="alert alert-danger">
-                {{ submission_form.arquivo.errors }}
-            </div>
-        {% endif %}
 
         <!-- Seção de Componentes -->
         <div class="mb-4">
             <h4 class="text-secondary">Componentes do Trabalho</h4>
-            <hr class="mt-0 mb-3">
             {{ component_formset.management_form }}
-
             <div id="component-forms">
                 {% for form in component_formset %}
                     <div class="component-form mb-3">
-                        <div class="row">
-                            <div class="col-md-4">
-                                {{ form.nome.label_tag }} {{ form.nome }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form.cpf.label_tag }} {{ form.cpf }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form.email.label_tag }} {{ form.email }}
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-danger mt-2 remove-form">Remover Componente</button>
+                        {{ form.as_p }}
+                        <button type="button" class="btn btn-danger remove-form">Remover Componente</button>
                     </div>
                 {% endfor %}
             </div>
-
             <button type="button" id="add-component" class="btn btn-success">Adicionar Componente</button>
         </div>
 
         <!-- Botão de Envio -->
         <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-lg px-5">
-                <i class="bi bi-file-earmark-arrow-up-fill"></i> Enviar Submissão
-            </button>
+            <button type="submit" class="btn btn-primary">Enviar Submissão</button>
         </div>
     </form>
 </div>
 
+<!-- Script para adicionar/remover componentes dinamicamente -->
 <script>
     // Função para remover um componente
     document.querySelectorAll('.remove-form').forEach(button => {
         button.addEventListener('click', function() {
             this.closest('.component-form').remove();
+            updateTotalForms();
         });
     });
 
@@ -84,9 +69,9 @@
         const formContainer = document.getElementById('component-forms');
         const totalForms = document.querySelectorAll('.component-form').length;
 
-        // Duplicando o último form para adicionar outro componente
+        // Clonando o último form para adicionar outro componente
         const newForm = document.querySelector('.component-form').cloneNode(true);
-        newForm.querySelectorAll('input').forEach(input => input.value = ''); // Limpa os inputs
+        newForm.querySelectorAll('input').forEach(input => input.value = ''); // Limpar os inputs
 
         // Atualizar os índices dos novos formulários
         newForm.innerHTML = newForm.innerHTML.replace(/form-(\d)-/g, `form-${totalForms}-`);
@@ -95,12 +80,18 @@
         // Reanexar o evento de remover ao novo botão
         newForm.querySelector('.remove-form').addEventListener('click', function() {
             newForm.remove();
+            updateTotalForms();
         });
 
         // Atualizar o total de formulários gerenciados no formset
-        const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
-        totalFormsInput.setAttribute('value', totalForms + 1);
+        updateTotalForms();
     });
+
+    // Função para atualizar o campo TOTAL_FORMS
+    function updateTotalForms() {
+        const totalForms = document.querySelectorAll('.component-form').length;
+        document.getElementById('id_form-TOTAL_FORMS').value = totalForms;
+    }
 </script>
 
 {% endblock %}

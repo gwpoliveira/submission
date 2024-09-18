@@ -3,6 +3,8 @@ from .models import Profile, Submission, Component
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
+from django import forms
+from django.forms import modelformset_factory
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -33,4 +35,4 @@ class UserRegisterForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 # Formset para múltiplos componentes
-ComponentFormSet = inlineformset_factory(Submission, Component, form=ComponentForm, extra=1, can_delete=True)
+ComponentFormSet = modelformset_factory(Component, form=ComponentForm, extra=1)

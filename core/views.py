@@ -86,29 +86,34 @@ def submission_form(request):
         component_formset = ComponentFormSet(request.POST)
 
         if profile_form.is_valid() and submission_form.is_valid() and component_formset.is_valid():
-            # Salvar as informações pessoais
+            # Salvar o perfil do usuário (informações pessoais)
             profile_form.save()
 
-            # Salvar a submissão sem comitar (commit=False) para ter acesso ao objeto de submissão
+            # Salvar a submissão sem comitar (commit=False) para acessar o objeto de submissão
             submission = submission_form.save(commit=False)
-            submission.user = request.user.profile  # Associa o perfil do usuário à submissão
+            submission.user = request.user.profile  # Relaciona a submissão ao perfil do usuário
             submission.save()  # Agora salva a submissão no banco de dados
 
-            # Associa a submissão aos componentes e salva o formset
+            # Associa a submissão aos componentes no formset e salva o formset
             components = component_formset.save(commit=False)
             for component in components:
-                component.submission = submission  # Define a submissão para cada componente
-                component.save()
+                component.submission = submission  # Associa cada componente à submissão
+                component.save()  # Salva o componente
 
-            # Agora salva o formset completo
+            # Finalmente, salva o formset completo para garantir que as associações foram feitas
             component_formset.save()
 
             return redirect('submission_success')
+        else:
+            # Exibir erros no formulário se existirem
+            print(profile_form.errors)
+            print(submission_form.errors)
+            print(component_formset.errors)
     else:
-        # Inicializar formulários com dados atuais do perfil e submissão vazia
+        # Inicializa os formulários com dados atuais ou vazios
         profile_form = ProfileForm(instance=profile)
         submission_form = SubmissionForm()
-        component_formset = ComponentFormSet()
+        component_formset = ComponentFormSet(queryset=Component.objects.none())  # Exibe formset vazio
 
     return render(request, 'submission_form.html', {
         'profile_form': profile_form,
