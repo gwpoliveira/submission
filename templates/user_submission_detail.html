@@ -86,5 +86,34 @@
     </div>
     {% endif %}
 
+    <!-- Formulário para o superusuário atualizar o status e observação da submissão -->
+    {% if user.is_superuser %}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h4>Atualizar Submissão</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'user_submission_detail' submission.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="EM_ANALISE" {% if submission.status == 'EM_ANALISE' %}selected{% endif %}>Em Análise</option>
+                        <option value="DEFERIDO" {% if submission.status == 'DEFERIDO' %}selected{% endif %}>Deferido</option>
+                        <option value="INDEFERIDO" {% if submission.status == 'INDEFERIDO' %}selected{% endif %}>Indeferido</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="observacao" class="form-label">Observação:</label>
+                    <textarea name="observacao" id="observacao" class="form-control" rows="3">{{ submission.observacao }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Atualizar Submissão</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

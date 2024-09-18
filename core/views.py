@@ -9,12 +9,13 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserRegisterForm, SubmissionForm, ProfileForm, ComponentFormSet
-from .models import Submission, Profile, ThematicAxis, Modality
+from .models import Submission, Profile, ThematicAxis, Modality, Component  # Adicione 'Component' aqui
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa  # Biblioteca para converter HTML em PDF
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
+
 
 # Função para verificar se o usuário é administrador
 def is_admin(user):
@@ -77,18 +78,20 @@ def submission_success(request):
 # Formulário de submissão de trabalhos
 @login_required
 def submission_form(request):
+    profile = request.user.profile
+
     if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        profile_form = ProfileForm(request.POST, instance=profile)
         submission_form = SubmissionForm(request.POST, request.FILES)
-        component_formset = ComponentFormSet(request.POST, request.FILES)
+        component_formset = ComponentFormSet(request.POST)
 
         if profile_form.is_valid() and submission_form.is_valid() and component_formset.is_valid():
-            # Primeiro, salva o perfil do usuário
+            # Salvar as informações pessoais
             profile_form.save()
 
-            # Salva a submissão sem comitar (commit=False) para ter acesso ao objeto de submissão
+            # Salvar a submissão sem comitar (commit=False) para ter acesso ao objeto de submissão
             submission = submission_form.save(commit=False)
-            submission.user = request.user.profile  # Atribui o usuário à submissão
+            submission.user = request.user.profile  # Associa o perfil do usuário à submissão
             submission.save()  # Agora salva a submissão no banco de dados
 
             # Associa a submissão aos componentes e salva o formset
@@ -102,14 +105,15 @@ def submission_form(request):
 
             return redirect('submission_success')
     else:
-        profile_form = ProfileForm(instance=request.user.profile)
+        # Inicializar formulários com dados atuais do perfil e submissão vazia
+        profile_form = ProfileForm(instance=profile)
         submission_form = SubmissionForm()
         component_formset = ComponentFormSet()
 
     return render(request, 'submission_form.html', {
         'profile_form': profile_form,
         'submission_form': submission_form,
-        'component_formset': component_formset
+        'component_formset': component_formset,
     })
 
 # Painel administrativo com filtro e paginação
