@@ -5,12 +5,12 @@
 <div class="container mt-5">
     <!-- Título H1 com destaque e subtítulo estilizado -->
     <div class="text-center mb-4">
-        <h1 class="display-3 text-secondary">Submeta Seu Trabalho</h1>
+        <h1 class="display-3 text-primary">Submeta Seu Trabalho</h1>
         <p class="text-muted">Preencha as informações abaixo para enviar sua submissão.</p>
     </div>
 
     <!-- Formulário de submissão -->
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-white">
         {% csrf_token %}
 
         <!-- Exibir erros globais do formulário -->
@@ -21,40 +21,42 @@
         {% endif %}
 
         <!-- Seção de Informações Pessoais -->
-        <div class="mb-4">
-            <h4 class="text-secondary">Informações Pessoais</h4>
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-person-fill"></i> Informações Pessoais</h4>
+            <hr>
             {{ profile_form.as_p }}
         </div>
 
         <!-- Seção de Submissão -->
-        <div class="mb-4">
-            <h4 class="text-secondary">Detalhes da Submissão</h4>
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-file-earmark-text"></i> Detalhes da Submissão</h4>
+            <hr>
             {{ submission_form.as_p }}
         </div>
 
         <!-- Seção de Componentes -->
-        <div class="mb-4">
-            <h4 class="text-secondary">Componentes do Trabalho</h4>
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-people-fill"></i> Componentes do Trabalho</h4>
+            <hr>
             {{ component_formset.management_form }}
             <div id="component-forms">
                 {% for form in component_formset %}
-                    <div class="component-form mb-3">
+                    <div class="component-form mb-3 p-3 border rounded bg-light">
                         {{ form.as_p }}
-                        <button type="button" class="btn btn-danger remove-form">Remover Componente</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-form mt-2">Remover Componente</button>
                     </div>
                 {% endfor %}
             </div>
-            <button type="button" id="add-component" class="btn btn-success">Adicionar Componente</button>
+            <button type="button" id="add-component" class="btn btn-outline-primary mt-3">Adicionar Componente</button>
         </div>
 
         <!-- Botão de Envio -->
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Enviar Submissão</button>
+            <button type="submit" class="btn btn-success btn-lg px-5">Enviar Submissão</button>
         </div>
     </form>
 </div>
 
-<!-- Script para adicionar/remover componentes dinamicamente -->
 <script>
     // Função para remover um componente
     document.querySelectorAll('.remove-form').forEach(button => {
