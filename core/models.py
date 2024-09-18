@@ -31,7 +31,7 @@ def validate_file_extension(value):
 class Component(models.Model):
     submission = models.ForeignKey('Submission', related_name='components', on_delete=models.CASCADE)
     nome = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=14, unique=True)
+    cpf = models.CharField(max_length=14)
     email = models.EmailField()
 
     def __str__(self):
