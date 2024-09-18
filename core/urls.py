@@ -12,5 +12,6 @@ urlpatterns = [
     path('submissions/', views.view_submissions, name='view_submissions'),
     path('submission-success/', views.submission_success, name='submission_success'),
     path('user-submission-detail/<int:submission_id>/', views.user_submission_detail, name='user_submission_detail'),
+    path('generate-acceptance-letter/<int:submission_id>/', views.generate_acceptance_letter, name='generate_acceptance_letter'),
 ]
 

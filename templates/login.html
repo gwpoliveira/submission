@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <h2 class="card-title text-center">Login</h2>
                     <form method="post" class="p-4">
-                        {% csrf_token %}
+                        {% csrf_token %}  <!-- Certifique-se de incluir o token CSRF aqui -->
                         {{ form.non_field_errors }}
                         {{ form.username.errors }}
                         <div class="mb-3">

@@ -1,7 +1,8 @@
 from django import forms
-from .models import Profile, Submission, ThematicAxis, Modality
+from .models import Profile, Submission, Component
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import inlineformset_factory
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -17,7 +18,12 @@ class ProfileForm(forms.ModelForm):
 class SubmissionForm(forms.ModelForm):
     class Meta:
         model = Submission
-        fields = ['thematic_axis', 'modality', 'arquivo']
+        fields = ['title', 'thematic_axis', 'modality', 'arquivo']
+
+class ComponentForm(forms.ModelForm):
+    class Meta:
+        model = Component
+        fields = ['nome', 'cpf', 'email']
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)  # Certifique-se de que o email é obrigatório
@@ -26,3 +32,5 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+# Formset para múltiplos componentes
+ComponentFormSet = inlineformset_factory(Submission, Component, form=ComponentForm, extra=1, can_delete=True)

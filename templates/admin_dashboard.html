@@ -50,7 +50,7 @@
                 <th>Modalidade</th>
                 <th>Data de Envio</th>
                 <th>Status</th>
-                <th>Observação</th>
+                <th>Carta de Aceite</th> <!-- Nova coluna para carta de aceite -->
             </tr>
         </thead>
         <tbody>
@@ -63,7 +63,17 @@
                 <td>{{ submission.modality.name }}</td>
                 <td>{{ submission.data_envio }}</td>
                 <td>{{ submission.get_status_display }}</td>
-                <td>{{ submission.observacao }}</td>
+
+                <!-- Exibir se a carta de aceite foi gerada ou não, e adicionar botão para gerar -->
+                <td>
+                    {% if submission.acceptance_letter_generated %}
+                    <span class="text-success">Carta Gerada</span>
+                    {% else %}
+                    <a href="{% url 'generate_acceptance_letter' submission.id %}" class="btn btn-warning btn-sm">
+                        Gerar Carta
+                    </a>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

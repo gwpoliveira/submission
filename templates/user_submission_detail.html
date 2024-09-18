@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Detalhes da Submissão</h1>
+
+    <!-- Exibir mensagens de erro ou sucesso -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
@@ -21,6 +32,7 @@
             <h4>Informações da Submissão</h4>
         </div>
         <div class="card-body">
+            <p><strong>Título do Trabalho:</strong> {{ submission.title }}</p>
             <p><strong>Eixo Temático:</strong> {{ submission.thematic_axis.name }}</p>
             <p><strong>Modalidade:</strong> {{ submission.modality.name }}</p>
             <p><strong>Data de Envio:</strong> {{ submission.data_envio|date:"d/m/Y H:i" }}</p>
@@ -47,31 +59,32 @@
         </div>
     </div>
 
-    <!-- Formulário para atualizar status e observação -->
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            <h4>Atualizar Submissão</h4>
+    <!-- Exibir os componentes do trabalho -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h4>Componentes do Trabalho</h4>
         </div>
         <div class="card-body">
-            <form method="post" action="{% url 'user_submission_detail' submission.id %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="status" class="form-label">Status:</label>
-                    <select name="status" id="status" class="form-select">
-                        <option value="EM_ANALISE" {% if submission.status == 'EM_ANALISE' %}selected{% endif %}>Em Análise</option>
-                        <option value="DEFERIDO" {% if submission.status == 'DEFERIDO' %}selected{% endif %}>Deferido</option>
-                        <option value="INDEFERIDO" {% if submission.status == 'INDEFERIDO' %}selected{% endif %}>Indeferido</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="observacao" class="form-label">Observação:</label>
-                    <textarea name="observacao" id="observacao" class="form-control" rows="3">{{ submission.observacao }}</textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Atualizar Submissão</button>
-            </form>
+            <ul>
+                {% for component in submission.components.all %}
+                <li>
+                    <p><strong>Nome:</strong> {{ component.nome }}</p>
+                    <p><strong>CPF:</strong> {{ component.cpf }}</p>
+                    <p><strong>Email:</strong> {{ component.email }}</p>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+
+    <!-- Botão para gerar a carta de aceite, visível apenas para o superusuário e se a submissão estiver deferida -->
+    {% if user.is_superuser and submission.status == 'DEFERIDO' %}
+    <div class="mb-3">
+        <a href="{% url 'generate_acceptance_letter' submission.id %}" class="btn btn-success">
+            Gerar Carta de Aceite
+        </a>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

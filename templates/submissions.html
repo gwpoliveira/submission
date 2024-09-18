@@ -12,6 +12,7 @@
                     <th>Data de Envio</th>
                     <th>Status</th>
                     <th>Observação</th>
+                    <th>Baixar Carta</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,15 @@
                     <td>{{ submission.data_envio }}</td>
                     <td>{{ submission.get_status_display }}</td>
                     <td>{{ submission.observacao }}</td>
+                    <td>
+                        {% if submission.acceptance_letter_generated %}
+                            <div class="mb-3">
+                                <a href="{% url 'generate_acceptance_letter' submission.id %}" class="btn btn-primary">
+                                    Baixar
+                                </a>
+                            </div>
+                            {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,0 +1,11 @@
+<h1>Carta de Aceite</h1>
+<p><strong>Título do Trabalho:</strong> {{ submission.title }}</p>
+<p><strong>Modalidade:</strong> {{ submission.modality.name }}</p>
+<p><strong>Data de Submissão:</strong> {{ submission.data_envio|date:"d/m/Y" }}</p>
+
+<h2>Componentes</h2>
+<ul>
+    {% for component in components %}
+    <li>{{ component.nome }} (CPF: {{ component.cpf }}, Email: {{ component.email }})</li>
+    {% endfor %}
+</ul>
