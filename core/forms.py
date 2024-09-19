@@ -11,13 +11,10 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'cpf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'CPF'}),
-            'whatsapp': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'WhatsApp'}),
+            'whatsapp': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Whatsapp'}),
             'comprovante_pagamento': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['whatsapp'].required = True  # Certifique-se de que está definido como obrigatório
 
 class SubmissionForm(forms.ModelForm):
     class Meta:

@@ -78,48 +78,38 @@ def submission_success(request):
 # Formulário de submissão de trabalhos
 @login_required
 def submission_form(request):
-    profile = request.user.profile
-
     if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         submission_form = SubmissionForm(request.POST, request.FILES)
-        component_formset = ComponentFormSet(request.POST)
+        component_formset = ComponentFormSet(request.POST, request.FILES)
 
         if profile_form.is_valid() and submission_form.is_valid() and component_formset.is_valid():
-            # Salvar o perfil do usuário (informações pessoais)
             profile_form.save()
-
-            # Salvar a submissão sem comitar (commit=False) para acessar o objeto de submissão
             submission = submission_form.save(commit=False)
-            submission.user = request.user.profile  # Relaciona a submissão ao perfil do usuário
-            submission.save()  # Agora salva a submissão no banco de dados
-
-            # Associa a submissão aos componentes no formset e salva o formset
-            components = component_formset.save(commit=False)
-            for component in components:
-                component.submission = submission  # Associa cada componente à submissão
-                component.save()  # Salva o componente
-
-            # Finalmente, salva o formset completo para garantir que as associações foram feitas
-            component_formset.save()
+            submission.user = request.user.profile
+            submission.save()
+            for form in component_formset:
+                component = form.save(commit=False)
+                component.submission = submission
+                component.save()
 
             return redirect('submission_success')
         else:
-            # Exibir erros no formulário se existirem
-            print(profile_form.errors)
-            print(submission_form.errors)
-            print(component_formset.errors)
+            # Aqui você pode verificar se o campo 'whatsapp' está com problemas.
+            if profile_form['whatsapp'].errors:
+                print(profile_form['whatsapp'].errors)
+
     else:
-        # Inicializa os formulários com dados atuais ou vazios
-        profile_form = ProfileForm(instance=profile)
+        profile_form = ProfileForm(instance=request.user.profile)
         submission_form = SubmissionForm()
-        component_formset = ComponentFormSet(queryset=Component.objects.none())  # Exibe formset vazio
+        component_formset = ComponentFormSet()
 
     return render(request, 'submission_form.html', {
         'profile_form': profile_form,
         'submission_form': submission_form,
-        'component_formset': component_formset,
+        'component_formset': component_formset
     })
+
 
 # Painel administrativo com filtro e paginação
 @login_required
