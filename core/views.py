@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
@@ -205,23 +205,23 @@ def about(request):
 def contact(request):
     return render(request, 'contact.html')
 
+
 @login_required
 def generate_acceptance_letter(request, submission_id):
-    submission = Submission.objects.get(id=submission_id)
+    submission = get_object_or_404(Submission, id=submission_id)
+
+    # Verifica se o status da submissão é 'DEFERIDO'
+    if submission.status != 'DEFERIDO':
+        messages.error(request, 'A carta de aceitação só pode ser gerada para submissões deferidas.')
+        return redirect('user_submission_detail', submission_id=submission_id)
 
     # Verifica se o usuário é superusuário ou autor da submissão
     if not (request.user.is_superuser or request.user.profile == submission.user):
-        messages.error(request, 'Você não tem permissão para acessar esta carta de aceite.')
-        return HttpResponseRedirect(reverse('home'))
+        messages.error(request, 'Você não tem permissão para acessar esta carta de aceitação.')
+        return redirect('user_submission_detail', submission_id=submission_id)
 
-    # Verifica se a submissão foi deferida
-    if submission.status != 'DEFERIDO':
-        messages.error(request, 'A carta de aceite só pode ser gerada para submissões deferidas.')
-        return HttpResponseRedirect(reverse('user_submission_detail', args=[submission_id]))
-
+    # Renderiza o template da carta de aceitação
     components = submission.components.all()
-
-    # Renderiza o template da carta de aceite
     html = render_to_string('acceptance_letter.html', {
         'submission': submission,
         'components': components
@@ -229,13 +229,14 @@ def generate_acceptance_letter(request, submission_id):
 
     # Gerar o PDF a partir do HTML
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="carta_aceite_{submission_id}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="carta_aceitacao_{submission_id}.pdf"'
     pisa_status = pisa.CreatePDF(html, dest=response)
 
     if pisa_status.err:
-        return HttpResponse('Erro ao gerar o PDF', status=500)
+        messages.error(request, 'Erro ao gerar a carta de aceitação.')
+        return redirect('user_submission_detail', submission_id=submission_id)
 
-    # Marcar que a carta foi gerada
+    # Marca que a carta foi gerada
     submission.acceptance_letter_generated = True
     submission.save()
 
