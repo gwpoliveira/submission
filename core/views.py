@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
@@ -205,7 +207,6 @@ def about(request):
 def contact(request):
     return render(request, 'contact.html')
 
-
 @login_required
 def generate_acceptance_letter(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
@@ -220,11 +221,19 @@ def generate_acceptance_letter(request, submission_id):
         messages.error(request, 'Você não tem permissão para acessar esta carta de aceitação.')
         return redirect('user_submission_detail', submission_id=submission_id)
 
+    # Caminho absoluto para os arquivos de imagem
+    banner_top_path = os.path.join(settings.STATIC_ROOT, 'img/banner_top.png')
+    signature_path = os.path.join(settings.STATIC_ROOT, 'img/signature.png')
+    banner_footer_path = os.path.join(settings.STATIC_ROOT, 'img/bannerfooter.png')
+
     # Renderiza o template da carta de aceitação
     components = submission.components.all()
     html = render_to_string('acceptance_letter.html', {
         'submission': submission,
-        'components': components
+        'components': components,
+        'banner_top_path': banner_top_path,
+        'signature_path': signature_path,
+        'banner_footer_path': banner_footer_path,
     })
 
     # Gerar o PDF a partir do HTML
@@ -241,3 +250,40 @@ def generate_acceptance_letter(request, submission_id):
     submission.save()
 
     return response
+
+
+# @login_required
+# def generate_acceptance_letter(request, submission_id):
+#     submission = get_object_or_404(Submission, id=submission_id)
+#
+#     # Verifica se o status da submissão é 'DEFERIDO'
+#     if submission.status != 'DEFERIDO':
+#         messages.error(request, 'A carta de aceitação só pode ser gerada para submissões deferidas.')
+#         return redirect('user_submission_detail', submission_id=submission_id)
+#
+#     # Verifica se o usuário é superusuário ou autor da submissão
+#     if not (request.user.is_superuser or request.user.profile == submission.user):
+#         messages.error(request, 'Você não tem permissão para acessar esta carta de aceitação.')
+#         return redirect('user_submission_detail', submission_id=submission_id)
+#
+#     # Renderiza o template da carta de aceitação
+#     components = submission.components.all()
+#     html = render_to_string('acceptance_letter.html', {
+#         'submission': submission,
+#         'components': components
+#     })
+#
+#     # Gerar o PDF a partir do HTML
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = f'attachment; filename="carta_aceitacao_{submission_id}.pdf"'
+#     pisa_status = pisa.CreatePDF(html, dest=response)
+#
+#     if pisa_status.err:
+#         messages.error(request, 'Erro ao gerar a carta de aceitação.')
+#         return redirect('user_submission_detail', submission_id=submission_id)
+#
+#     # Marca que a carta foi gerada
+#     submission.acceptance_letter_generated = True
+#     submission.save()
+#
+#     return response
