@@ -20,7 +20,7 @@ class Modality(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(verbose_name='Nome completo:', max_length=255, default='')
-    cpf = models.CharField(verbose_name='CPF:', max_length=14, unique=True, blank=True, null=True)
+    cpf = models.CharField(verbose_name='CPF:', max_length=14, blank=True, null=True)
     whatsapp = models.CharField(verbose_name='Whatsapp:', max_length=15)
     comprovante_pagamento = models.FileField(verbose_name='Comprovante de inscrição no congresso:', upload_to='comprovantes/', blank=False, null=False)
 
