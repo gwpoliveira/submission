@@ -15,6 +15,10 @@ class ProfileForm(forms.ModelForm):
             'comprovante_pagamento': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['whatsapp'].required = True  # Certifique-se de que está definido como obrigatório
+
 class SubmissionForm(forms.ModelForm):
     class Meta:
         model = Submission
