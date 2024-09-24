@@ -17,8 +17,8 @@
             font-size: 14px;
             line-height: 1.6;
             text-align: justify;
-            margin: 0; /* Remover margens */
-            padding: 0; /* Remover paddings */
+            margin: 0;
+            padding: 0;
         }
 
         h1, h2 {
@@ -41,17 +41,23 @@
             text-align: right;
         }
 
-        .banner-top img, .banner-bottom img {
-            width: 100vw; /* Ocupar 100% da largura da viewport */
-            margin-left: calc(-50vw + 50%); /* Centralizar o banner */
-            max-width: 100vw; /* Certificar que ele não se expanda além da viewport */
+        .banner {
+            width: 100%;
+            max-width: 100vw; /* Garante que os banners não ultrapassem a largura da tela */
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Banner Topo -->
-        <div class="banner-top text-center mb-4">
+        <div class="banner text-center mb-4">
             <img src="{{ banner_top_path }}" alt="Banner do Evento">
         </div>
 
@@ -92,8 +98,8 @@
         </div>
 
         <!-- Banner Rodapé -->
-        <div class="banner-bottom text-center mt-5">
-            <img src="{{ banner_footer_path }}" alt="Banner Footer" class="img-fluid">
+        <div class="banner text-center mt-5">
+            <img src="{{ banner_footer_path }}" alt="Banner Footer">
         </div>
     </div>
 
@@ -101,110 +107,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-
-{#{% load static %}#}
-{#<!DOCTYPE html>#}
-{#<html lang="pt-br">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#    <title>Carta de Aceite</title>#}
-{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">#}
-{#    <style>#}
-{#        @page {#}
-{#            size: A4;#}
-{#            margin: 20mm;#}
-{#        }#}
-{##}
-{#        body {#}
-{#            font-family: Arial, sans-serif;#}
-{#            font-size: 14px;#}
-{#            line-height: 1.6;#}
-{#            text-align: justify;#}
-{#            margin: 0; /* Remover margens */#}
-{#            padding: 0; /* Remover paddings */#}
-{#        }#}
-{##}
-{#        h1, h2 {#}
-{#            text-align: center;#}
-{#            font-weight: bold;#}
-{#        }#}
-{##}
-{#        .signature-section {#}
-{#            text-align: center;#}
-{#            margin-top: 100px;#}
-{#        }#}
-{##}
-{#        .signature-section img {#}
-{#            width: 200px;#}
-{#            margin-bottom: 0px;#}
-{#        }#}
-{##}
-{#        .date-location {#}
-{#            margin-top: 30px;#}
-{#            text-align: right;#}
-{#        }#}
-{##}
-{#        .banner-top img, .banner-bottom img {#}
-{#            width: 100vw; /* Ocupar 100% da largura da viewport */#}
-{#            margin-left: calc(-50vw + 50%); /* Centralizar o banner */#}
-{#            max-width: 100vw; /* Certificar que ele não se expanda além da viewport */#}
-{#        }#}
-{#    </style>#}
-{#</head>#}
-{#<body>#}
-{#    <div class="container">#}
-{#        <!-- Banner Topo -->#}
-{#        <div class="banner-top text-center mb-4">#}
-{#            <img src="/static/img/banner_top.png" alt="Banner do Evento">#}
-{#        </div>#}
-{##}
-{#        <!-- Título da Carta -->#}
-{#        <h1 class="text-primary">CARTA DE ACEITE</h1>#}
-{##}
-{#        <!-- Conteúdo Principal -->#}
-{#        <p class="mt-4">Prezados(as):</p>#}
-{##}
-{#        <!-- Exibir os componentes (Nome e Email) -->#}
-{#        <div class="component-list mb-3">#}
-{#            {% for component in components %}#}
-{#            <p><strong>{{ component.nome }}</strong> - {{ component.email }}</p>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{##}
-{#        <p>O Comitê Organizador do <strong>XIV CONAFF – Congresso Acadêmico Fatepi-Faespi</strong>, que traz como temática: <strong>Piauí Sustentável: conectando saberes, transformando realidades</strong>, a ser realizado nos dias 08 à 11 de novembro de 2024, tem o prazer de informar que o trabalho submetido à comissão científica e intitulado <strong>{{ submission.title }}</strong>, foi aceito para apresentação na seguinte modalidade:</p>#}
-{##}
-{#        <p class="fw-bold"><strong>Modalidade:</strong> {{ submission.modality.name }}</p>#}
-{##}
-{#        <p>Agradecemos sua importante colaboração para o êxito do evento.</p>#}
-{##}
-{#        <p class="fw-bold">Obs:</p>#}
-{#        <ul>#}
-{#            <li>A exposição oral dos artigos e resumos expandidos será no dia xx/xx/2024 de forma presencial, seguindo a ordem de apresentação disponibilizada no site do evento.</li>#}
-{#        </ul>#}
-{##}
-{#        <!-- Data e Local -->#}
-{#        <div class="date-location mt-4">#}
-{#            Teresina(PI), {{ submission.data_envio|date:"d/m/Y" }}.#}
-{#        </div>#}
-{##}
-{#        <!-- Assinatura -->#}
-{#        <div class="signature-section">#}
-{#            <img src="/static/img/signature.png" alt="Assinatura da Comissão" class="img-fluid">#}
-{#            <p class="fw-bold">Comissão Organizadora</p>#}
-{#            <p>XIV CONAFF</p>#}
-{#        </div>#}
-{##}
-{#        <!-- Banner Rodapé -->#}
-{#        <div class="banner-bottom text-center mt-5">#}
-{#            <img src="/static/img/bannerfooter.png" alt="Banner Footer" class="img-fluid">#}
-{#        </div>#}
-{#    </div>#}
-{##}
-{#    <!-- Bootstrap JS (Opcional, caso queira usar funcionalidades interativas) -->#}
-{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>#}
-{#</body>#}
-{#</html>#}
