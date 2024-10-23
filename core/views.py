@@ -83,7 +83,7 @@ def submission_form(request):
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         submission_form = SubmissionForm(request.POST, request.FILES)
-        component_formset = ComponentFormSet(request.POST, request.FILES)
+        component_formset = ComponentFormSet(request.POST, request.FILES, queryset=Component.objects.none())  # Garante que o formset está vazio
 
         if profile_form.is_valid() and submission_form.is_valid() and component_formset.is_valid():
             profile_form.save()
@@ -96,21 +96,17 @@ def submission_form(request):
                 component.save()
 
             return redirect('submission_success')
-        else:
-            # Aqui você pode verificar se o campo 'whatsapp' está com problemas.
-            if profile_form['whatsapp'].errors:
-                print(profile_form['whatsapp'].errors)
-
     else:
         profile_form = ProfileForm(instance=request.user.profile)
         submission_form = SubmissionForm()
-        component_formset = ComponentFormSet()
+        component_formset = ComponentFormSet(queryset=Component.objects.none())  # Garante que o formset começa vazio
 
     return render(request, 'submission_form.html', {
         'profile_form': profile_form,
         'submission_form': submission_form,
         'component_formset': component_formset
     })
+
 
 
 # Painel administrativo com filtro e paginação
