@@ -13,5 +13,7 @@ urlpatterns = [
     path('submission-success/', views.submission_success, name='submission_success'),
     path('user-submission-detail/<int:submission_id>/', views.user_submission_detail, name='user_submission_detail'),
     path('generate-acceptance-letter/<int:submission_id>/', views.generate_acceptance_letter, name='generate_acceptance_letter'),
+    path('edit-submission/<int:submission_id>/', views.edit_submission, name='edit_submission'),
+
 ]
 

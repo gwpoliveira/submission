@@ -247,6 +247,43 @@ def generate_acceptance_letter(request, submission_id):
 
     return response
 
+@login_required
+def edit_submission(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id, user=request.user.profile)
+    component_formset = ComponentFormSet(request.POST or None, request.FILES or None, queryset=submission.components.all())
+
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        submission_form = SubmissionForm(request.POST, request.FILES, instance=submission)
+
+        if profile_form.is_valid() and submission_form.is_valid() and component_formset.is_valid():
+            profile_form.save()
+            submission = submission_form.save(commit=False)
+            submission.user = request.user.profile
+            submission.save()
+
+            # Atualiza os componentes
+            for form in component_formset:
+                component = form.save(commit=False)
+                component.submission = submission
+                component.save()
+
+            # Redireciona para uma página de sucesso ou detalhes da submissão
+            messages.success(request, 'Submissão editada com sucesso.')
+            return redirect('view_submissions')
+
+    else:
+        profile_form = ProfileForm(instance=request.user.profile)
+        submission_form = SubmissionForm(instance=submission)
+
+    return render(request, 'edit_submission.html', {
+        'profile_form': profile_form,
+        'submission_form': submission_form,
+        'component_formset': component_formset,
+        'submission': submission
+    })
+
+
 
 # @login_required
 # def generate_acceptance_letter(request, submission_id):

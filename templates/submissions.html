@@ -13,6 +13,7 @@
                     <th>Status</th>
                     <th>Observação</th>
                     <th>Baixar Carta</th>
+                    <th>Ações</th> <!-- Nova coluna para ações -->
                 </tr>
             </thead>
             <tbody>
@@ -20,9 +21,9 @@
                 <tr>
                     <td>{{ submission.thematic_axis.name }}</td>
                     <td>{{ submission.modality.name }}</td>
-                    <td>{{ submission.data_envio }}</td>
+                    <td>{{ submission.data_envio|date:"d/m/Y H:i" }}</td>
                     <td>{{ submission.get_status_display }}</td>
-                    <td>{{ submission.observacao }}</td>
+                    <td>{{ submission.observacao|default:"Nenhuma observação" }}</td>
                     <td>
                         {% if submission.acceptance_letter_generated %}
                             <div class="mb-3">
@@ -30,7 +31,11 @@
                                     Baixar
                                 </a>
                             </div>
-                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- Botão de editar visível apenas para o proprietário da submissão -->
+                        <a href="{% url 'edit_submission' submission.id %}" class="btn btn-warning btn-sm">Editar</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Título H1 com destaque e subtítulo estilizado -->
+    <div class="text-center mb-4">
+        <h1 class="display-3 text-primary">Editar Submissão</h1>
+        <p class="text-muted">Edite as informações abaixo para atualizar sua submissão.</p>
+    </div>
+
+    <!-- Formulário de edição -->
+    <form method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-white">
+        {% csrf_token %}
+
+        <!-- Exibir erros globais do formulário -->
+        {% if profile_form.errors or submission_form.errors or component_formset.errors %}
+            <div class="alert alert-danger">
+                <strong>Corrija os erros abaixo e tente novamente.</strong>
+            </div>
+        {% endif %}
+
+        <!-- Seção de Informações Pessoais -->
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-person-fill"></i> Informações Pessoais</h4>
+            <hr>
+            {{ profile_form.as_p }}
+        </div>
+
+        <!-- Seção de Submissão -->
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-file-earmark-text"></i> Detalhes da Submissão</h4>
+            <hr>
+            {{ submission_form.as_p }}
+        </div>
+
+        <!-- Seção de Componentes -->
+        <div class="mb-5">
+            <h4 class="text-primary"><i class="bi bi-people-fill"></i> Componentes do Trabalho</h4>
+            <hr>
+            {{ component_formset.management_form }}
+            <div id="component-forms">
+                {% for form in component_formset %}
+                    <div class="component-form mb-3 p-3 border rounded bg-light">
+                        {{ form.as_p }}
+                        <button type="button" class="btn btn-danger btn-sm remove-form mt-2">Remover Componente</button>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-component" class="btn btn-outline-primary mt-3">Adicionar Componente</button>
+        </div>
+
+        <!-- Botão de Envio -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg px-5">Atualizar Submissão</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Função para remover um componente
+    document.querySelectorAll('.remove-form').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.component-form').remove();
+            updateTotalForms();
+        });
+    });
+
+    // Função para adicionar um novo componente
+    document.getElementById('add-component').addEventListener('click', function () {
+        const formContainer = document.getElementById('component-forms');
+        const totalForms = document.querySelectorAll('.component-form').length;
+
+        // Clonando o último form para adicionar outro componente
+        const newForm = document.querySelector('.component-form').cloneNode(true);
+        newForm.querySelectorAll('input').forEach(input => input.value = ''); // Limpar os inputs
+
+        // Atualizar os índices dos novos formulários
+        newForm.innerHTML = newForm.innerHTML.replace(/form-(\d)-/g, `form-${totalForms}-`);
+        formContainer.appendChild(newForm);
+
+        // Reanexar o evento de remover ao novo botão
+        newForm.querySelector('.remove-form').addEventListener('click', function() {
+            newForm.remove();
+            updateTotalForms();
+        });
+
+        // Atualizar o total de formulários gerenciados no formset
+        updateTotalForms();
+    });
+
+    // Função para atualizar o campo TOTAL_FORMS
+    function updateTotalForms() {
+        const totalForms = document.querySelectorAll('.component-form').length;
+        document.getElementById('id_form-TOTAL_FORMS').value = totalForms;
+    }
+</script>
+
+{% endblock %}
